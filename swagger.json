@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "User API",
+    "version": "1.0.0",
+    "description": "API para gestionar usuarios"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "Juan Pérez"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "age": {
+            "type": "integer",
+            "example": 30
+          },
+          "city": {
+            "type": "string",
+            "example": "Bogotá"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "age",
+          "city"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/user": {
+      "get": {
+        "summary": "Obtener todos los usuarios",
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Juan Pérez",
+                    "email": "juan.perez@example.com",
+                    "age": 30,
+                    "city": "Bogotá"
+                  },
+                  {
+                    "id": 2,
+                    "name": "María García",
+                    "email": "maria.garcia@example.com",
+                    "age": 25,
+                    "city": "Medellín"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "example": {
+                "name": "Nuevo Usuario",
+                "email": "nuevo@example.com",
+                "password": "RandomPassword",
+                "age": 25,
+                "city": "Bogotá"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": 6,
+                  "name": "Nuevo Usuario",
+                  "email": "nuevo@example.com",
+                  "age": 25,
+                  "city": "Bogotá"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Obtener un usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Juan Pérez Actualizado",
+                  "email": "juan.actualizado@example.com",
+                  "age": 31,
+                  "city": "Bogotá",
+                  "createdAt": "5134:sefewf",
+                  "updatedAt": "34513134534 "
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Usuario no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "example": {
+                "name": "Juan Pérez Actualizado",
+                "email": "juan.actualizado@example.com",
+                "age": 31,
+                "city": "Bogotá"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Juan Pérez Actualizado",
+                  "email": "juan.actualizado@example.com",
+                  "age": 31,
+                  "city": "Bogotá"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Usuario no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Juan Pérez",
+                  "email": "juan.perez@example.com",
+                  "age": 30,
+                  "city": "Bogotá"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Usuario no encontrado"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

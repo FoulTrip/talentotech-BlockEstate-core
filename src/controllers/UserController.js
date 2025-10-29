@@ -1,4 +1,5 @@
 import { prisma } from "../utils/prisma.js"
+import bcrypt from "bcrypt"
 
 export const GetUsers = async (req, res) => {
     try {
@@ -42,14 +43,10 @@ export const CreateUser = async (req, res) => {
             throw new Error("incomplete data!");
         }
 
+        const hashPassword = await bcrypt.hash(password, 10);
+
         const newUser = await prisma.user.create({
-            data: {
-                "name": name,
-                "email": email,
-                password: password,
-                age: age,
-                city: city
-            }
+            data: { name, email, password: hashPassword, age, city }
         });
 
         res.status(201).json(newUser);
@@ -87,7 +84,7 @@ export const DeleteUser = async (req, res) => {
         const deleteuser = await prisma.user.delete({ where: { id } });
         if (!deleteuser) throw new Error("Error process delete user");
         res.status(404).json(deleteuser)
-    } catch(error) {
+    } catch (error) {
         res.status(404).json({ message: 'Error delete user' });
     }
 };

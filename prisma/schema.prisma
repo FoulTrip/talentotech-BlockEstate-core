@@ -17,3 +17,58 @@ model User {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
 }
+
+model author {
+    id String @id @default(uuid()) @map("_id")
+
+    // Información personal
+    name       String
+    lastName   String
+    secondName String
+    fullname   String // concatenado para búsquedas
+
+    // Fechas vitales
+    birthDate  DateTime
+    birthPlace String?
+    deathDate  DateTime?
+    deathPlace String?
+
+    // Información biográfica
+    biography   String?  @db.String
+    shortBio    String?
+    nationality String[]
+    languages   String[]
+
+    // Información profesional
+    genres     String[] // Géneros literarios que escribe
+    occupation String[] // Ocupaciones (escritor, poeta, periodista, etc.)
+    education  String?
+    awards     String[] // Premios literarios recibidos
+
+    // Información de contacto y redes
+    email       String? @unique
+    website     String?
+    socialMedia Json? // {twitter, instagram, facebook, etc}
+
+    // Información editorial
+    isActive   Boolean @default(true)
+    isVerified Boolean @default(false) // Si la información está verificada
+    totalBooks Int     @default(0)
+
+    // Imágenes
+    photoUrl      String?
+    coverImageUrl String? // Imagen de portada para perfil
+
+    // Metadata
+    slug       String  @unique // URL-friendly identifier
+    searchText String? // Texto optimizado para búsqueda
+    views      Int     @default(0)
+    popularity Float   @default(0.0) // Score de popularidad
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+model book {
+    id String @id @default(uuid()) @map("_id")
+}

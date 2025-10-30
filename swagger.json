@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "User API",
+    "title": "Managment Books Store API",
     "version": "1.0.0",
-    "description": "API para gestionar usuarios"
+    "description": "API para gestionar usuarios y autores"
   },
   "servers": [
     {
@@ -43,12 +43,186 @@
           "age",
           "city"
         ]
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "Gabriel"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "García"
+          },
+          "secondName": {
+            "type": "string",
+            "example": "José"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Gabriel José García Márquez"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "example": "1927-03-06"
+          },
+          "birthPlace": {
+            "type": "string",
+            "example": "Aracataca, Colombia"
+          },
+          "deathDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2014-04-17"
+          },
+          "deathPlace": {
+            "type": "string",
+            "example": "Ciudad de México, México"
+          },
+          "biography": {
+            "type": "string",
+            "example": "Biografía completa del autor..."
+          },
+          "shortBio": {
+            "type": "string",
+            "example": "Escritor colombiano, premio Nobel de Literatura."
+          },
+          "nationality": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Colombiano",
+              "Mexicano"
+            ]
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Español",
+              "Inglés"
+            ]
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Novela",
+              "Cuento",
+              "Periodismo"
+            ]
+          },
+          "occupation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Escritor",
+              "Periodista"
+            ]
+          },
+          "education": {
+            "type": "string",
+            "example": "Estudios en derecho y periodismo"
+          },
+          "awards": {
+            "type": "string",
+            "example": "Premio Nobel de Literatura 1982"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "gabriel.garcia@example.com"
+          },
+          "website": {
+            "type": "string",
+            "example": "https://www.gabrielgarcia.com"
+          },
+          "socialMedia": {
+            "type": "string",
+            "example": "@gabrielgarcia"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "totalBooks": {
+            "type": "integer",
+            "example": 25
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "https://example.com/photo.jpg"
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "example": "https://example.com/cover.jpg"
+          },
+          "slug": {
+            "type": "string",
+            "example": "gabriel-garcia-marquez"
+          },
+          "searchText": {
+            "type": "string",
+            "example": "Gabriel García Márquez literatura"
+          },
+          "views": {
+            "type": "integer",
+            "example": 100000
+          },
+          "popularity": {
+            "type": "number",
+            "example": 9.5
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "name",
+          "lastName",
+          "secondName",
+          "fullname",
+          "birthDate",
+          "slug",
+          "nationality",
+          "languages",
+          "genres",
+          "occupation"
+        ]
       }
     }
   },
   "paths": {
     "/user": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "summary": "Obtener todos los usuarios",
         "responses": {
           "200": {
@@ -83,6 +257,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Users"
+        ],
         "summary": "Crear un nuevo usuario",
         "requestBody": {
           "required": true,
@@ -127,6 +304,9 @@
     },
     "/user/{id}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "summary": "Obtener un usuario",
         "parameters": [
           {
@@ -172,6 +352,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Users"
+        ],
         "summary": "Actualizar un usuario",
         "parameters": [
           {
@@ -231,6 +414,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Users"
+        ],
         "summary": "Eliminar un usuario",
         "parameters": [
           {
@@ -267,6 +453,413 @@
               "application/json": {
                 "example": {
                   "message": "Usuario no encontrado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/author": {
+      "get": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Obtener todos los autores",
+        "responses": {
+          "200": {
+            "description": "Lista de autores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "550e8400-e29b-41d4-a716-446655440000",
+                    "name": "Gabriel",
+                    "lastName": "García",
+                    "secondName": "José",
+                    "fullname": "Gabriel José García Márquez",
+                    "birthDate": "1927-03-06",
+                    "slug": "gabriel-garcia-marquez",
+                    "nationality": [
+                      "Colombiano"
+                    ],
+                    "languages": [
+                      "Español"
+                    ],
+                    "genres": [
+                      "Novela",
+                      "Cuento"
+                    ],
+                    "occupation": [
+                      "Escritor"
+                    ],
+                    "isActive": true,
+                    "isVerified": true,
+                    "totalBooks": 25,
+                    "views": 100000,
+                    "popularity": 9.5
+                  },
+                  {
+                    "id": "550e8400-e29b-41d4-a716-446655440001",
+                    "name": "Mario",
+                    "lastName": "Vargas",
+                    "secondName": "Llosa",
+                    "fullname": "Mario Vargas Llosa",
+                    "birthDate": "1936-03-28",
+                    "slug": "mario-vargas-llosa",
+                    "nationality": [
+                      "Peruano"
+                    ],
+                    "languages": [
+                      "Español"
+                    ],
+                    "genres": [
+                      "Novela",
+                      "Ensayo"
+                    ],
+                    "occupation": [
+                      "Escritor",
+                      "Político"
+                    ],
+                    "isActive": true,
+                    "isVerified": true,
+                    "totalBooks": 30,
+                    "views": 80000,
+                    "popularity": 9.2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Crear un nuevo autor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Author"
+              },
+              "example": {
+                "name": "Nuevo",
+                "lastName": "Autor",
+                "secondName": "Ejemplo",
+                "fullname": "Nuevo Autor Ejemplo",
+                "birthDate": "1980-01-01",
+                "slug": "nuevo-autor-ejemplo",
+                "nationality": [
+                  "Colombiano"
+                ],
+                "languages": [
+                  "Español"
+                ],
+                "genres": [
+                  "Novela"
+                ],
+                "occupation": [
+                  "Escritor"
+                ],
+                "email": "nuevo.autor@example.com",
+                "isActive": true,
+                "isVerified": false,
+                "totalBooks": 1,
+                "views": 0,
+                "popularity": 0.0
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Autor creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                },
+                "example": {
+                  "id": "550e8400-e29b-41d4-a716-446655440002",
+                  "name": "Nuevo",
+                  "lastName": "Autor",
+                  "secondName": "Ejemplo",
+                  "fullname": "Nuevo Autor Ejemplo",
+                  "birthDate": "1980-01-01",
+                  "slug": "nuevo-autor-ejemplo",
+                  "nationality": [
+                    "Colombiano"
+                  ],
+                  "languages": [
+                    "Español"
+                  ],
+                  "genres": [
+                    "Novela"
+                  ],
+                  "occupation": [
+                    "Escritor"
+                  ],
+                  "email": "nuevo.autor@example.com",
+                  "isActive": true,
+                  "isVerified": false,
+                  "totalBooks": 1,
+                  "views": 0,
+                  "popularity": 0.0,
+                  "createdAt": "2023-01-01T00:00:00.000Z",
+                  "updatedAt": "2023-01-01T00:00:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/author/{id}": {
+      "get": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Obtener un autor por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Autor encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                },
+                "example": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "name": "Gabriel",
+                  "lastName": "García",
+                  "secondName": "José",
+                  "fullname": "Gabriel José García Márquez",
+                  "birthDate": "1927-03-06",
+                  "slug": "gabriel-garcia-marquez",
+                  "nationality": [
+                    "Colombiano"
+                  ],
+                  "languages": [
+                    "Español"
+                  ],
+                  "genres": [
+                    "Novela",
+                    "Cuento"
+                  ],
+                  "occupation": [
+                    "Escritor"
+                  ],
+                  "isActive": true,
+                  "isVerified": true,
+                  "totalBooks": 25,
+                  "views": 100000,
+                  "popularity": 9.5,
+                  "createdAt": "2023-01-01T00:00:00.000Z",
+                  "updatedAt": "2023-01-01T00:00:00.000Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Autor no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Autor no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Actualizar un autor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Author"
+              },
+              "example": {
+                "name": "Gabriel",
+                "lastName": "García",
+                "secondName": "José",
+                "fullname": "Gabriel José García Márquez",
+                "birthDate": "1927-03-06",
+                "slug": "gabriel-garcia-marquez",
+                "nationality": [
+                  "Colombiano"
+                ],
+                "languages": [
+                  "Español"
+                ],
+                "genres": [
+                  "Novela",
+                  "Cuento"
+                ],
+                "occupation": [
+                  "Escritor"
+                ],
+                "email": "gabriel.garcia.updated@example.com",
+                "isActive": true,
+                "isVerified": true,
+                "totalBooks": 26,
+                "views": 110000,
+                "popularity": 9.6
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autor actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                },
+                "example": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "name": "Gabriel",
+                  "lastName": "García",
+                  "secondName": "José",
+                  "fullname": "Gabriel José García Márquez",
+                  "birthDate": "1927-03-06",
+                  "slug": "gabriel-garcia-marquez",
+                  "nationality": [
+                    "Colombiano"
+                  ],
+                  "languages": [
+                    "Español"
+                  ],
+                  "genres": [
+                    "Novela",
+                    "Cuento"
+                  ],
+                  "occupation": [
+                    "Escritor"
+                  ],
+                  "email": "gabriel.garcia.updated@example.com",
+                  "isActive": true,
+                  "isVerified": true,
+                  "totalBooks": 26,
+                  "views": 110000,
+                  "popularity": 9.6,
+                  "updatedAt": "2023-01-02T00:00:00.000Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Autor no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Autor no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Eliminar un autor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Autor eliminado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                },
+                "example": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "name": "Gabriel",
+                  "lastName": "García",
+                  "secondName": "José",
+                  "fullname": "Gabriel José García Márquez",
+                  "birthDate": "1927-03-06",
+                  "slug": "gabriel-garcia-marquez",
+                  "nationality": [
+                    "Colombiano"
+                  ],
+                  "languages": [
+                    "Español"
+                  ],
+                  "genres": [
+                    "Novela",
+                    "Cuento"
+                  ],
+                  "occupation": [
+                    "Escritor"
+                  ],
+                  "isActive": true,
+                  "isVerified": true,
+                  "totalBooks": 25,
+                  "views": 100000,
+                  "popularity": 9.5
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Autor no encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Autor no encontrado"
                 }
               }
             }

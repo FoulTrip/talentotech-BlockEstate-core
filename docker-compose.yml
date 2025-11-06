@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Aplicación Node.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: book-api
+    ports:
+      - "3000:3000"
+    environment:
+      # Variables de entorno - ACTUALIZA ESTOS VALORES
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL}
+      - TOKEN_PASS=${TOKEN_PASS}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/docs', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

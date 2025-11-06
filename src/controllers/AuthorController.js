@@ -2,6 +2,7 @@ import { ErrorHook, ValidationHook } from "../utils/TryCatchHook.js";
 import { prisma } from "../utils/prisma.js"
 
 export class AuthorController {
+
     async CreateAuthor(req, res) {
         const {
             name,

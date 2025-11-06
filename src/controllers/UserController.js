@@ -1,6 +1,5 @@
 import { prisma } from "../utils/prisma.js"
-import bcrypt from "bcrypt"
-import { ErrorHook, ValidationHook } from "../utils/TryCatchHook.js"
+import { ErrorHook } from "../utils/TryCatchHook.js"
 
 export class UserController {
     GetUsers = async (req, res) => {

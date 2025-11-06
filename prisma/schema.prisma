@@ -67,8 +67,30 @@ model author {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
+    book      book[]
 }
 
 model book {
-    id String @id @default(uuid()) @map("_id")
+    id          String           @id @default(uuid()) @map("_id")
+    name        String
+    description String?
+    authorId    String
+    author      author           @relation(fields: [authorId], references: [id])
+    categories  String[]
+
+    genre         String?
+    language      String?
+    publishedDate DateTime?
+    publisher     String?
+    isbn          String?   @unique
+    pageCount     Int?
+    format        String?
+    coverImage    String?
+    price         Float?
+    stock         Int?
+    rating        Float?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
+

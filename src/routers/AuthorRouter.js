@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthorController } from "../controllers/AuthorController.js";
+import { authMiddleware } from "../middlewares/AuthMiddleware.js";
 
 const authorRouter = Router();
 const AuthorService = new AuthorController();
@@ -13,8 +14,9 @@ const {
 
 authorRouter.get("/", GetAuthors);
 authorRouter.get("/:id", GetAuthor);
-authorRouter.post("/", CreateAuthor);
-authorRouter.put("/:id", UpdateAuthor);
-authorRouter.delete("/:id", DeleteAuthor);
+
+authorRouter.post("/", authMiddleware, CreateAuthor);
+authorRouter.put("/:id", authMiddleware, UpdateAuthor);
+authorRouter.delete("/:id", authMiddleware, DeleteAuthor);
 
 export default authorRouter;

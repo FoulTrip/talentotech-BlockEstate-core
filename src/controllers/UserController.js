@@ -31,49 +31,6 @@ export class UserController {
         }
     }
 
-    CreateUser = async (req, res) => {
-        const {
-            name,
-            email,
-            password,
-            age,
-            city
-        } = req.body;
-
-        try {
-            const errors = ValidationHook([
-                { name: 'name', value: name, type: 'string', required: true, label: 'Name' },
-                { name: 'email', value: email, type: 'email', required: true, label: 'Email' },
-                { name: 'password', value: password, type: 'string', required: true, label: 'Password' },
-                { name: 'age', value: age, type: 'number', required: true, label: 'Age' },
-                { name: 'city', value: city, type: 'string', required: true, label: 'City' },
-            ]);
-
-            if (errors.length > 0) {
-                return res.status(400).json({
-                    message: "Validation failed",
-                    errors
-                });
-            }
-
-            const hashPassword = await bcrypt.hash(password, 10);
-
-            const newUser = await prisma.user.create({
-                data: {
-                    name,
-                    email,
-                    password: hashPassword,
-                    age,
-                    city
-                }
-            });
-
-            res.status(201).json(newUser);
-        } catch (error) {
-            ErrorHook(error, res);
-        }
-    };
-
     UpdateUser = async (req, res) => {
         const { id } = req.params;
         const data = req.body;

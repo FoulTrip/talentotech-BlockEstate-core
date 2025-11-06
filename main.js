@@ -4,22 +4,28 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import { IsConnectDB } from "./src/utils/prisma.js";
 import cors from "cors"
+import morgan from "morgan";
 
 import userRouter from "./src/routers/UserRouter.js";
 import authorRouter from "./src/routers/AuthorRouter.js";
+import bookRouter from "./src/routers/BookRouter.js";
+import authRouter from "./src/routers/AuthRouter.js";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(morgan("dev"));
 IsConnectDB();
 
 const port = process.env.PORT | 3000;
 
 // Custom Routers
+app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/author", authorRouter);
+app.use("/book", bookRouter);
 
 // Swagger Config
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

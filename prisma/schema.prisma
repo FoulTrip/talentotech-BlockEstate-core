@@ -8,89 +8,341 @@ datasource db {
 }
 
 model User {
-    id        String   @id @default(uuid()) @map("_id")
-    name      String
-    email     String   @unique
-    password  String
-    age       Int
-    city      String
+    id       String   @id @default(uuid()) @map("_id")
+    name     String
+    email    String   @unique
+    password String
+    age      Int
+    city     String
+    role     UserRole @default(INVESTOR)
+
+    // Blockchain fields (opcional por ahora)
+    walletAddress String? @unique
+    kycVerified   Boolean @default(false)
+    kycProvider   String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+
+    // Relaciones
+    investments  Investment[]
+    properties   Property[]    @relation("PropertyOwner")
+    transactions Transaction[]
+}
+
+enum UserRole {
+    INVESTOR
+    OWNER
+    ADMIN
+}
+
+model Property {
+    id          String @id @default(uuid()) @map("_id")
+    title       String
+    description String
+    address     String
+    city        String
+    country     String @default("Colombia")
+    latitude    Float?
+    longitude   Float?
+
+    // Información financiera
+    price          Float
+    estimatedValue Float?
+
+    // Tokenización
+    totalTokens     Int
+    tokenPrice      Float
+    availableTokens Int
+    tokenSymbol     String?
+
+    // Distribución
+    landOwnerPercent Float @default(60)
+    poolPercent      Float @default(40)
+
+    // Media
+    images         String[]
+    documents      String[]
+    virtualTourUrl String?
+
+    // Estado
+    status PropertyStatus @default(PENDING)
+
+    // Blockchain fields (para futuro)
+    contractAddress   String?   @unique
+    tokenId           String?
+    blockchainNetwork String?   @default("KodeChain")
+    txHash            String?
+    onChainStatus     Boolean   @default(false)
+    lastSyncedAt      DateTime?
+
+    // Relaciones
+    ownerId      String
+    owner        User                @relation("PropertyOwner", fields: [ownerId], references: [id])
+    investments  Investment[]
+    transactions Transaction[]
+    phases       ConstructionPhase[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
 }
 
-model author {
+enum PropertyStatus {
+    PENDING         // En revisión
+    APPROVED        // Aprobada para tokenización
+    TOKENIZING      // Generando tokens
+    TOKENIZED       // Tokens generados
+    FUNDING         // Buscando inversión
+    FUNDED          // Inversión completa
+    CONSTRUCTION    // En construcción
+    COMPLETED       // Construcción terminada
+    RENTING         // Generando rentas
+    SOLD            // Vendida
+    CANCELLED       // Cancelada
+}
+
+model Investment {
     id String @id @default(uuid()) @map("_id")
 
-    // Información personal
-    name       String
-    lastName   String
-    secondName String
-    fullname   String // concatenado para búsquedas
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 
-    // Fechas vitales
-    birthDate  DateTime
-    birthPlace String?
-    deathDate  DateTime?
-    deathPlace String?
+    propertyId String
+    property   Property @relation(fields: [propertyId], references: [id])
 
-    // Información biográfica
-    biography   String?  @db.String
-    shortBio    String?
-    nationality String[]
-    languages   String[]
+    tokensAmount    Int
+    tokenPrice      Float
+    investmentValue Float // Total invertido
+    type            InvestmentType
 
-    // Información profesional
-    genres     String[] // Géneros literarios que escribe
-    occupation String[] // Ocupaciones (escritor, poeta, periodista, etc.)
-    education  String?
-    awards     String[] // Premios literarios recibidos
+    status InvestmentStatus @default(ACTIVE)
 
-    // Información de contacto y redes
-    email       String? @unique
-    website     String?
-    socialMedia Json? // {twitter, instagram, facebook, etc}
+    // ROI tracking
+    totalDividends Float     @default(0)
+    lastDividendAt DateTime?
 
-    // Información editorial
-    isActive   Boolean @default(true)
-    isVerified Boolean @default(false) // Si la información está verificada
-    totalBooks Int     @default(0)
-
-    // Imágenes
-    photoUrl      String?
-    coverImageUrl String? // Imagen de portada para perfil
-
-    // Metadata
-    slug       String  @unique // URL-friendly identifier
-    searchText String? // Texto optimizado para búsqueda
-    views      Int     @default(0)
-    popularity Float   @default(0.0) // Score de popularidad
+    // Blockchain fields (para futuro)
+    walletAddress String?
+    txHash        String?
+    blockNumber   Int?
+    onChain       Boolean @default(false)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
-    book      book[]
 }
 
-model book {
-    id          String           @id @default(uuid()) @map("_id")
-    name        String
-    description String?
-    authorId    String
-    author      author           @relation(fields: [authorId], references: [id])
-    categories  String[]
+enum InvestmentType {
+    OWNER_PORTION // Propietario terreno 60%
+    POOL_PORTION // Pool Constructor 40%
+}
 
-    genre         String?
-    language      String?
-    publishedDate DateTime?
-    publisher     String?
-    isbn          String?   @unique
-    pageCount     Int?
-    format        String?
-    coverImage    String?
-    price         Float?
-    stock         Int?
-    rating        Float?
+enum InvestmentStatus {
+    ACTIVE
+    SOLD
+    TRANSFERRED
+    LOCKED
+}
+
+model Transaction {
+    id String @id @default(uuid()) @map("_id")
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    propertyId String
+    property   Property @relation(fields: [propertyId], references: [id])
+
+    type   TransactionType
+    amount Float
+    tokens Int?
+    status TransactionStatus @default(PENDING)
+
+    // Detalles adicionales
+    description   String?
+    paymentMethod String?
+    reference     String? // Referencia de pago externa
+
+    // Blockchain fields (para futuro)
+    walletAddress String?
+    txHash        String?
+    blockNumber   Int?
+    gasUsed       Float?
+    onChain       Boolean @default(false)
 
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    updatedAt DateTime @updatedAt()
 }
 
+enum TransactionType {
+    TOKEN_PURCHASE // Compra de tokens
+    TOKEN_SALE // Venta de tokens
+    RENTAL_INCOME // Ingreso por renta
+    SALE_PROFIT // Ganancia por venta
+    CONSTRUCTION_PAYMENT // Pago de construcción
+    DIVIDEND // Dividendo
+    REFUND // Reembolso
+    FEE // Comisión de plataforma
+}
+
+enum TransactionStatus {
+    PENDING
+    PROCESSING
+    COMPLETED
+    FAILED
+    REFUNDED
+    CANCELLED
+}
+
+model ConstructionPhase {
+    id         String   @id @default(uuid()) @map("_id")
+    propertyId String
+    property   Property @relation(fields: [propertyId], references: [id])
+
+    name        String
+    description String
+    order       Int
+    status      PhaseStatus @default(PENDING)
+
+    // Presupuesto
+    estimatedCost Float
+    actualCost    Float?
+
+    // Fechas
+    estimatedStartDate DateTime?
+    estimatedEndDate   DateTime?
+    actualStartDate    DateTime?
+    actualEndDate      DateTime?
+
+    // Progreso
+    progressPercent Int @default(0)
+
+    // Media
+    images    String[]
+    documents String[]
+
+    // Pagos
+    paymentReleased Boolean   @default(false)
+    paymentDate     DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+enum PhaseStatus {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+    DELAYED
+    CANCELLED
+}
+
+model Ecosystem {
+    id String @id @default(uuid()) @map("_id")
+
+    name        String
+    type        EcosystemType
+    description String
+    url         String?
+
+    // Integraciones
+    apiKey     String?
+    apiSecret  String?
+    webhookUrl String?
+    isActive   Boolean @default(true)
+
+    // Configuración
+    config String? // JSON stringificado
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+enum EcosystemType {
+    REAL_ESTATE_PLATFORM
+    PAYMENT_GATEWAY
+    BLOCKCHAIN
+    IDENTITY_VERIFICATION
+    MARKETPLACE
+    BANK
+    NOTARY
+}
+
+model BlockchainSync {
+    id         String     @id @default(uuid()) @map("_id")
+    entityType EntityType // Tipo de entidad
+    entityId   String // ID de la entidad
+
+    // Blockchain info
+    txHash      String?
+    blockNumber Int?
+    network     String? // ethereum, polygon, etc.
+
+    // Estado
+    status       SyncStatus
+    errorMessage String?
+    retryCount   Int        @default(0)
+
+    // Metadata
+    metadata String? // JSON con datos adicionales
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+
+    @@index([entityType, entityId])
+}
+
+enum EntityType {
+    PROPERTY
+    INVESTMENT
+    TRANSACTION
+    USER
+}
+
+enum SyncStatus {
+    PENDING
+    SYNCING
+    SYNCED
+    FAILED
+    SKIPPED
+}
+
+model PlatformConfig {
+    id    String @id @default(uuid()) @map("_id")
+    key   String @unique
+    value String
+
+    description String?
+    isPublic    Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+model Notification {
+    id     String @id @default(uuid()) @map("_id")
+    userId String
+
+    title   String
+    message String
+    type    NotificationType
+
+    // Relacionado
+    entityType String?
+    entityId   String?
+
+    // Estado
+    read   Boolean   @default(false)
+    readAt DateTime?
+
+    createdAt DateTime @default(now())
+}
+
+enum NotificationType {
+    INVESTMENT
+    TRANSACTION
+    PROPERTY_UPDATE
+    CONSTRUCTION_UPDATE
+    DIVIDEND_PAYMENT
+    KYC_UPDATE
+    SYSTEM
+}

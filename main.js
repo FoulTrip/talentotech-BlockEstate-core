@@ -7,8 +7,6 @@ import cors from "cors"
 import morgan from "morgan";
 
 import userRouter from "./src/routers/UserRouter.js";
-import authorRouter from "./src/routers/AuthorRouter.js";
-import bookRouter from "./src/routers/BookRouter.js";
 import authRouter from "./src/routers/AuthRouter.js";
 
 dotenv.config();
@@ -24,8 +22,6 @@ const port = process.env.PORT | 3000;
 // Custom Routers
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-app.use("/author", authorRouter);
-app.use("/book", bookRouter);
 
 // Swagger Config
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

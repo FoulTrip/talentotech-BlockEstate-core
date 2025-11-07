@@ -2,6 +2,7 @@ import { createSigner } from "fast-jwt";
 import { prisma } from "../utils/prisma.js"
 import bcrypt from "bcrypt"
 import { ErrorHook, ValidationHook } from "../utils/TryCatchHook.js";
+import { GenerateWalletAddress } from "../utils/GenerateWalletAddress.js";
 
 export class AuthController {
     async login(req, res) {
@@ -68,6 +69,17 @@ export class AuthController {
                     city
                 }
             });
+
+            const newWallet = GenerateWalletAddress();
+
+            await prisma.user.update(
+                {
+                    where: { id: newUser.id },
+                    data: {
+                        walletAddress: newWallet
+                    }
+                }
+            );
 
             const signSync = createSigner({
                 key: process.env.TOKEN_PASS,

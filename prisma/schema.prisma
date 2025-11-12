@@ -28,6 +28,7 @@ model User {
     investments  Investment[]
     properties   Property[]    @relation("PropertyOwner")
     transactions Transaction[]
+    kyc          KYC?
 }
 
 enum UserRole {
@@ -82,23 +83,24 @@ model Property {
     investments  Investment[]
     transactions Transaction[]
     phases       ConstructionPhase[]
+    kyb          KYB?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
 }
 
 enum PropertyStatus {
-    PENDING         // En revisión
-    APPROVED        // Aprobada para tokenización
-    TOKENIZING      // Generando tokens
-    TOKENIZED       // Tokens generados
-    FUNDING         // Buscando inversión
-    FUNDED          // Inversión completa
-    CONSTRUCTION    // En construcción
-    COMPLETED       // Construcción terminada
-    RENTING         // Generando rentas
-    SOLD            // Vendida
-    CANCELLED       // Cancelada
+    PENDING // En revisión
+    APPROVED // Aprobada para tokenización
+    TOKENIZING // Generando tokens
+    TOKENIZED // Tokens generados
+    FUNDING // Buscando inversión
+    FUNDED // Inversión completa
+    CONSTRUCTION // En construcción
+    COMPLETED // Construcción terminada
+    RENTING // Generando rentas
+    SOLD // Vendida
+    CANCELLED // Cancelada
 }
 
 model Investment {
@@ -345,4 +347,147 @@ enum NotificationType {
     DIVIDEND_PAYMENT
     KYC_UPDATE
     SYSTEM
+}
+
+// KYC - Know Your Customer (Verificación de usuarios)
+model KYC {
+    id     String @id @default(uuid()) @map("_id")
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Documentos de identidad
+    idCardFrontImage String? // URL de foto frontal de cédula
+    idCardBackImage  String? // URL de foto trasera de cédula
+    selfieImage      String? // URL de selfie para verificación biométrica
+
+    // Información de identificación
+    idNumber     String? // Número de identificación
+    idType       String?   @default("CC") // CC, CE, Pasaporte, etc.
+    fullName     String? // Nombre completo según documento
+    dateOfBirth  DateTime?
+    placeOfBirth String?
+    nationality  String?
+    occupation   String?
+    address      String?
+    phone        String?
+
+    // Estado de verificación
+    status           KYCStatus @default(PENDING)
+    verificationDate DateTime?
+    verifiedBy       String? // ID del admin que verificó
+    rejectionReason  String? // Razón de rechazo si aplica
+
+    // Verificación biométrica
+    biometricScore     Float? // Score de verificación facial
+    livenessCheck      Boolean @default(false)
+    documentValidation Boolean @default(false)
+
+    // Información adicional
+    riskLevel   RiskLevel @default(MEDIUM)
+    notes       String? // Notas del verificador
+    ipAddress   String?
+    userAgent   String?
+    geolocation String?
+
+    // Metadata
+    submittedAt DateTime?
+    expiresAt   DateTime? // Fecha de expiración de la verificación
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+enum KYCStatus {
+    PENDING // Pendiente de envío
+    SUBMITTED // Enviado para revisión
+    IN_REVIEW // En revisión
+    APPROVED // Aprobado
+    REJECTED // Rechazado
+    EXPIRED // Expirado
+    RESUBMIT_REQUIRED // Requiere reenvío
+}
+
+enum RiskLevel {
+    LOW
+    MEDIUM
+    HIGH
+    VERY_HIGH
+}
+
+// KYB - Know Your Business (Verificación de propiedades)
+model KYB {
+    id         String   @id @default(uuid()) @map("_id")
+    propertyId String   @unique
+    property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+    // Documentos legales de la propiedad
+    libertadYTradicion   String? // Certificado de libertad y tradición
+    escrituraPublica     String? // Escritura pública
+    cedulaCatastral      String? // Cédula catastral
+    predialCertificate   String? // Certificado de paz y salvo predial
+    valoracionComercial  String? // Avalúo comercial
+    planos               String? // Planos arquitectónicos
+    licenciaConstruccion String? // Licencia de construcción (si aplica)
+    usoSuelo             String? // Certificado de uso de suelo
+    serviciosPublicos    String? // Certificados de servicios públicos
+
+    // Documentos del propietario legal
+    ownerIdDocument   String? // Documento de identidad del propietario
+    powerOfAttorney   String? // Poder notarial (si aplica)
+    taxIdentification String? // RUT o identificación fiscal
+    bankAccountProof  String? // Certificación bancaria
+
+    // Información fiscal y financiera
+    taxId              String? // NIT o identificación tributaria
+    taxRegime          String? // Régimen tributario
+    lastTaxDeclaration String? // Última declaración de renta
+    propertyTaxStatus  String? // Estado del impuesto predial
+
+    // Verificación de propiedad
+    cadastralNumber   String? // Matrícula inmobiliaria
+    propertyRegistry  String? // Registro de la propiedad
+    ownershipVerified Boolean @default(false)
+    encumbrances      String? // Gravámenes o limitaciones
+
+    // Estado de verificación
+    status           KYBStatus @default(PENDING)
+    verificationDate DateTime?
+    verifiedBy       String? // ID del admin que verificó
+    rejectionReason  String? // Razón de rechazo si aplica
+
+    // Due Diligence
+    dueDiligenceReport  String? // Informe de due diligence
+    legalOpinion        String? // Opinión legal
+    environmentalReport String? // Informe ambiental (si aplica)
+    structuralReport    String? // Informe estructural
+    appraisalValue      Float? // Valor del avalúo
+    appraisalDate       DateTime?
+    appraiserLicense    String? // Licencia del avaluador
+
+    // Información adicional
+    riskLevel         RiskLevel @default(MEDIUM)
+    complianceScore   Float? // Score de cumplimiento normativo
+    notes             String? // Notas del verificador
+    documentsComplete Boolean   @default(false)
+    legalVerified     Boolean   @default(false)
+    financialVerified Boolean   @default(false)
+    technicalVerified Boolean   @default(false)
+
+    // Metadata
+    submittedAt DateTime?
+    expiresAt   DateTime? // Fecha de expiración de la verificación (ej: 1 año)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+}
+
+enum KYBStatus {
+    PENDING // Pendiente de envío
+    SUBMITTED // Enviado para revisión
+    IN_REVIEW // En revisión
+    APPROVED // Aprobado
+    REJECTED // Rechazado
+    EXPIRED // Expirado
+    RESUBMIT_REQUIRED // Requiere reenvío
+    CONDITIONAL_APPROVAL // Aprobación condicional
 }

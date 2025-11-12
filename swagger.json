@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Management Books Store API",
+    "title": "BlockEstate API",
     "version": "1.0.0",
-    "description": "API para gestionar usuarios, autores y libros"
+    "description": "API para gestionar BlockEstate Core"
   },
   "servers": [
     {
@@ -111,6 +111,140 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         }
+      },
+      "Property": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "example": "Apartamento en el centro"
+          },
+          "description": {
+            "type": "string",
+            "example": "Hermoso apartamento con vista panorámica"
+          },
+          "address": {
+            "type": "string",
+            "example": "Calle 10 #20-30"
+          },
+          "city": {
+            "type": "string",
+            "example": "Bogotá"
+          },
+          "country": {
+            "type": "string",
+            "example": "Colombia"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 4.6097
+          },
+          "longitude": {
+            "type": "number",
+            "example": -74.0817
+          },
+          "price": {
+            "type": "number",
+            "example": 250000000
+          },
+          "estimatedValue": {
+            "type": "number",
+            "example": 250000000
+          },
+          "tokenSymbol": {
+            "type": "string",
+            "example": "PROP001"
+          },
+          "totalTokens": {
+            "type": "integer",
+            "example": 1000
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "address",
+          "city",
+          "country",
+          "price",
+          "estimatedValue",
+          "tokenSymbol",
+          "totalTokens",
+          "ownerId"
+        ]
+      },
+      "PropertyRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Apartamento en el centro"
+          },
+          "description": {
+            "type": "string",
+            "example": "Hermoso apartamento con vista panorámica"
+          },
+          "address": {
+            "type": "string",
+            "example": "Calle 10 #20-30"
+          },
+          "city": {
+            "type": "string",
+            "example": "Bogotá"
+          },
+          "country": {
+            "type": "string",
+            "example": "Colombia"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 4.6097
+          },
+          "longitude": {
+            "type": "number",
+            "example": -74.0817
+          },
+          "price": {
+            "type": "number",
+            "example": 250000000
+          },
+          "estimatedValue": {
+            "type": "number",
+            "example": 250000000
+          },
+          "tokenSymbol": {
+            "type": "string",
+            "example": "PROP001"
+          },
+          "totalTokens": {
+            "type": "integer",
+            "example": 1000
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "address",
+          "city",
+          "country",
+          "price",
+          "estimatedValue",
+          "tokenSymbol",
+          "totalTokens",
+          "ownerId"
+        ]
       }
     }
   },
@@ -229,6 +363,11 @@
           "Users"
         ],
         "summary": "Obtener todos los usuarios",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Lista de usuarios",
@@ -268,6 +407,11 @@
           "Users"
         ],
         "summary": "Obtener un usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -288,13 +432,13 @@
                   "$ref": "#/components/schemas/User"
                 },
                 "example": {
-                  "id": 1,
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
                   "name": "Juan Pérez Actualizado",
                   "email": "juan.actualizado@example.com",
                   "age": 31,
                   "city": "Bogotá",
-                  "createdAt": "5134:sefewf",
-                  "updatedAt": "34513134534 "
+                  "createdAt": "2024-01-15T10:30:00Z",
+                  "updatedAt": "2024-01-20T15:45:00Z"
                 }
               }
             }
@@ -316,6 +460,11 @@
           "Users"
         ],
         "summary": "Actualizar un usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -378,6 +527,11 @@
           "Users"
         ],
         "summary": "Eliminar un usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -416,6 +570,231 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/property": {
+      "get": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Obtener todas las propiedades",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de propiedades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Property"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Crear nueva propiedad",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyRequest"
+              },
+              "example": {
+                "title": "Apartamento en el centro",
+                "description": "Hermoso apartamento con vista panorámica",
+                "address": "Calle 10 #20-30",
+                "city": "Bogotá",
+                "country": "Colombia",
+                "latitude": 4.6097,
+                "longitude": -74.0817,
+                "price": 250000000,
+                "estimatedValue": 250000000,
+                "tokenSymbol": "PROP001",
+                "totalTokens": 1000,
+                "ownerId": "550e8400-e29b-41d4-a716-446655440000"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Propiedad creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Property"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validación fallida o datos inválidos"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/property/{id}": {
+      "get": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Obtener una propiedad por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Propiedad encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Property"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Propiedad no encontrada"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Actualizar una propiedad",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Propiedad actualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Property"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Propiedad no encontrada"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Eliminar una propiedad",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Propiedad eliminada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Property deleted successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Property"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Propiedad no encontrada"
+          },
+          "401": {
+            "description": "No autorizado"
           }
         }
       }

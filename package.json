@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon main.js"
+    "start": "node main.js",
+    "dev": "nodemon main.js",
+    "build": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -20,8 +22,14 @@
     "express": "^5.1.0",
     "fast-jwt": "^6.0.2",
     "morgan": "^1.10.1",
-    "nodemon": "^3.1.10",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

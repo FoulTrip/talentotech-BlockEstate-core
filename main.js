@@ -8,6 +8,7 @@ import morgan from "morgan";
 
 import userRouter from "./src/routers/UserRouter.js";
 import authRouter from "./src/routers/AuthRouter.js";
+import propertyRouter from "./src/routers/PropertyRouter.js";
 
 dotenv.config();
 
@@ -19,9 +20,19 @@ IsConnectDB();
 
 const port = process.env.PORT | 3000;
 
+// Health check endpoint
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "OK",
+        message: "Server is running",
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Custom Routers
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/property", propertyRouter);
 
 // Swagger Config
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

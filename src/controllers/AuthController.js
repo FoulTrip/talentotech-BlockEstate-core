@@ -66,20 +66,15 @@ export class AuthController {
                     email,
                     password: hashPassword,
                     age,
-                    city
-                }
-            });
-
-            const newWallet = GenerateWalletAddress();
-
-            await prisma.user.update(
-                {
-                    where: { id: newUser.id },
-                    data: {
-                        walletAddress: newWallet
+                    city,
+                    walletAddress: GenerateWalletAddress(),
+                    kyc: {
+                        create: {
+                            status: "PENDING",
+                        }
                     }
                 }
-            );
+            });
 
             const signSync = createSigner({
                 key: process.env.TOKEN_PASS,

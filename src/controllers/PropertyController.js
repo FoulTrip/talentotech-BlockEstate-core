@@ -1,5 +1,5 @@
-import { prisma } from "../utils/prisma"
-import { ErrorHook, ValidationHook } from "../utils/TryCatchHook";
+import { prisma } from "../utils/prisma.js"
+import { ErrorHook, ValidationHook } from "../utils/TryCatchHook.js";
 
 export class PropertyController {
     async AddProperty(req, res) {

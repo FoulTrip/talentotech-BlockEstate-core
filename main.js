@@ -13,10 +13,20 @@ import propertyRouter from "./src/routers/PropertyRouter.js";
 dotenv.config();
 
 const app = express();
-app.use(express.json());
+
+// CORS debe ir ANTES de cualquier otro middleware
 app.use(cors({
-    origin: "*"
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: false,
+    optionsSuccessStatus: 200
 }));
+
+// Manejar preflight requests explícitamente
+app.options('*', cors());
+
+app.use(express.json());
 app.use(morgan("dev"));
 IsConnectDB();
 

@@ -14,7 +14,6 @@ dotenv.config();
 
 const app = express();
 
-// CORS debe ir ANTES de cualquier otro middleware
 app.use(cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -22,9 +21,6 @@ app.use(cors({
     credentials: false,
     optionsSuccessStatus: 200
 }));
-
-// Manejar preflight requests explícitamente
-app.options('*', cors());
 
 app.use(express.json());
 app.use(morgan("dev"));

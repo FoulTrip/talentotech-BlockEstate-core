@@ -7,7 +7,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://blockestate-e0zo.onrender.com",
+      "description": "Servidor de producción"
     }
   ],
   "components": {
